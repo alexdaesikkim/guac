@@ -28,6 +28,7 @@ app.get('/:game/:min/:max', function(req, res, next){
   //there's a limit on how much i can make
 
   //if i really want to host this for FREE, i need to get through some loopholes
+  //if this was purely json data and pulling data from it, i can use randomizer with ease
   //todo later: make mental note somewhere else
   try{
     var workbook = excel.readFile(filename);
