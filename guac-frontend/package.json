@@ -9,6 +9,7 @@
     "react-dom": "^16.0.0",
     "react-scripts": "1.0.17"
   },
+  "proxy": "http://localhost:3001",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

@@ -22,6 +22,14 @@
   font-size: large;
 }
 
+.selected{
+  background-color: #ffffff;
+}
+
+.deselected{
+  background-color: #4d4d4d;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

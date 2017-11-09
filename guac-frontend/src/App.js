@@ -12,12 +12,15 @@ var App = createReactClass({
       game_name: '',
       min_level: '',
       max_level: '',
+      song_num: 0,
       song:{
         name: '',
         artist: '',
         level: '',
         difficulty: ''
-      }
+      },
+      songs: [],
+      status: ""
     }
   },
 
@@ -33,6 +36,60 @@ var App = createReactClass({
     })
   },
 
+  changeSongNum(event){
+    this.setState({
+      song_num: event.target.value
+    })
+  },
+
+  handleRandomCall(){
+    var that = this;
+    $.ajax({
+      url: '/'+that.state.game_id+'/'+that.state.min_level+'/'+that.state.max_level,
+      method: 'GET',
+      success: function(data){
+        that.setState({
+          song:{
+            name: data.name,
+            artist: data.artist,
+            level: data.level,
+            difficulty: data.difficulty
+          }
+        });
+      },
+      error: function(data){
+      }
+    })
+  },
+
+  handleDDRCall(){
+      var that = this;
+      var songnum = parseInt(this.state.song_num, 10) + 3;
+      $.ajax({
+        url: '/'+that.state.game_id+'/'+that.state.min_level+'/'+that.state.max_level+'/'+songnum,
+        method: 'GET',
+        success: function(data){
+          var songs = data.songs;
+          songs = songs.map(function(obj){
+            var object = {
+              name: obj.name,
+              artist: obj.artist,
+              level: obj.level,
+              difficulty: obj.difficulty,
+              card_class: " selected"
+            }
+            return object;
+          })
+          that.setState({
+            songs: songs,
+            status: ""
+          });
+        },
+        error: function(data){
+        }
+  })
+},
+
   handleChangeGameName(event){
     var game_id = event.target.id;
     var game_name = "";
@@ -42,7 +99,7 @@ var App = createReactClass({
       case "iidx":
         game_name = "Beatmania IIDX Copula";
         min_level = 9;
-        max_level = 12;
+        max_level = 9;
         break;
       case "ddr":
         game_name = "Dance Dance Revolution 2014";
@@ -103,24 +160,84 @@ var App = createReactClass({
     );
   },
 
+  ddr_song_inputform(){
+    if(this.state.game_id === 'ddr'){
+      return(
+        <div>
+          Number of Players:
+          <input type="number" className="form-control" value={this.state.song_num} onChange={this.changeSongNum}></input>
+        </div>
+      )
+    }
+  },
+
   displayLevelForm(){
-    if(this.state.game_id !== ''){
+    if(this.state.game_id === 'ddr'){
       return(
         //form for min_level
         <div>
           <div>
+            Min Level:
             <input type="number" className="form-control" value={this.state.min_level} onChange={this.changeMinLevel}></input>
+            Max Level:
             <input type="number" className="form-control" value={this.state.max_level} onChange={this.changeMaxLevel}></input>
+            Number of Players (+3 songs grabbed):
+            <input type="number" className="form-control" value={this.state.song_num} onChange={this.changeSongNum}></input>
+          </div>
+          <div className="row">
+            <div className="col-sm-6 justify-content-center">
+              Grab {this.state.song_num} Random Songs (Lvl {this.state.min_level} ~ {this.state.max_level})
+            </div>
+          </div>
+          <button className="btn btn-primary" onClick={this.handleDDRCall}>Submit</button>
+        </div>
+      );
+    }
+    else if(this.state.game_id !== ''){
+      return(
+        //form for min_level
+        <div>
+          <div>
+            Min Level:
+            <input type="number" className="form-control" value={this.state.min_level} onChange={this.changeMinLevel}></input>
+            Max Level:
+            <input type="number" className="form-control" value={this.state.max_level} onChange={this.changeMaxLevel}></input>
+            {this.ddr_song_inputform()}
           </div>
           <div className="row">
             <div className="col-sm-6 justify-content-center">
               Grab Random Song (Lvl {this.state.min_level} ~ {this.state.max_level})
             </div>
           </div>
+          <button className="btn btn-primary" onClick={this.handleRandomCall}>Submit</button>
         </div>
       );
     }
     else return null;
+  },
+
+  displaySong(){
+    if(this.state.game_id === "ddr"){
+      var ddr_songs = this.state.songs.map(function(obj){
+        return(
+          <Song song={obj} key={"song_"+obj.name + " " + obj.difficulty} />
+        )
+      })
+      return(
+        <div className="row justify-content-center">
+          {ddr_songs}
+        </div>
+      )
+    }
+    else return(
+      <div>
+        {this.state.song.name}
+        <br/>
+        {this.state.song.artist}
+        <br/>
+        {this.state.song.difficulty + " " + this.state.song.level}
+      </div>
+    )
   },
 
   render() {
@@ -133,12 +250,53 @@ var App = createReactClass({
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
           <br/>
-          {this.state.game_name}
         </p>
-        {this.dropdown()}
-        <br/>
-        {this.displayLevelForm()}
+        <div className="container">
+          {this.state.game_name}
+          <br/>
+          {this.dropdown()}
+          <br/>
+          {this.displayLevelForm()}
+          <br/>
+          {this.displaySong()}
+          <br/>
+        </div>
       </div>
+    );
+  }
+});
+
+var Song = createReactClass({
+  getInitialState(){
+    return{
+      class: this.props.song.card_class
+    }
+  },
+
+  onClickChange(){
+    if(this.state.class === " selected"){
+      this.setState({
+        class: " deselected"
+      })
+    }
+    else{
+      this.setState({
+        class: " selected"
+      })
+    }
+  },
+
+  render() {
+    var c = "card" + this.state.class;
+    console.log(c);
+    return (
+        <div className={c}>
+          <div className="card-body" style={{width: 225}} onClick={this.onClickChange}>
+            <h5 className="card-title">{this.props.song.name}</h5>
+            <h6 className="card-subtitle mb-4 text-muted">{this.props.song.artist}</h6>
+            <h6 className="card-subtitle mb-4">{this.props.song.difficulty + " " + this.props.song.level}</h6>
+          </div>
+        </div>
     );
   }
 });
