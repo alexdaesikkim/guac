@@ -27,10 +27,6 @@ function shuffle(array, size){
 //if this was purely json data and pulling data from it, i can use randomizer with ease
 //todo later: make mental note somewhere else
 
-function offset(){
-
-}
-
 function grab_data(worksheet, row){
   var songname = worksheet[("A" + row)].v;
   var artist = worksheet[("B" + row)].v;
@@ -105,12 +101,10 @@ app.get('/:game/:min/:max/:count', function(req, res, next){
   var x = 1; //due to column title "total";
   for(x; x < req.params.min; x++){
     var cell = "F"+x;
-    console.log(cell);
     offset += worksheet[cell].v;
   }
   for(x; x <= req.params.max; x++){
     var cell = "F"+x;
-    console.log(worksheet[cell].v);
     total += worksheet[cell].v;
   }
 
