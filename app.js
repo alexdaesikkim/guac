@@ -1,6 +1,8 @@
 var app = require('express')();
 var excel = require('xlsx');
 
+app.use(express.static(path.join(__dirname, 'react-frontend/build')));
+
 //fisher-yates
 function shuffle(array, size){
   for(var i = 0; i < size; i++){
