@@ -16,7 +16,7 @@ var App = createReactClass({
       abs_max: 0,
       song_num: 1,
       songs: [],
-      status: "",
+      status: false,
       errors:{
         error_message: "",
         error_class: ""
@@ -43,6 +43,22 @@ var App = createReactClass({
   },
 
   handleRandomCall(){
+    if(this.state.min_level < this.state.abs_min || this.state.max_level > this.state.abs_max || this.state.min_level > this.state.max_level){
+      this.setState({
+        errors:{
+          error_message: "Level must be between " + this.state.abs_min + " and " + this.state.abs_max + ". Please try again",
+          error_class: "alert-warning"
+        }
+      })
+    }
+    else{
+      this.setState({
+        status: true
+      }, this.grabRandomSongs());
+    }
+  },
+
+  grabRandomSongs(){
     var that = this;
     var songnum = parseInt(this.state.song_num, 10);
     var song_class = "";
@@ -67,13 +83,21 @@ var App = createReactClass({
         })
         that.setState({
           songs: songs,
-          status: ""
+          status: false,
+          errors:{
+            error_message: "",
+            error_class: ""
+          }
         });
       },
       error: function(data){
         that.setState({
-          error_message: "There was an error. Please try reloading the page or tweet @supernovamaniac for support",
-          error_class: "alert-danger"
+          songs: [],
+          status: false,
+          errors:{
+            error_message: "There was an error. Please try reloading the page or tweet @supernovamaniac for support",
+            error_class: "alert-danger"
+          }
         })
       }
     })
@@ -142,6 +166,7 @@ var App = createReactClass({
     });
 
   },
+
   dropdown(){
     var button_value = (this.state.game_id === '' ? "SELECT GAME" : this.state.game_id.toUpperCase());
 
@@ -219,6 +244,43 @@ var App = createReactClass({
     else return null;
   },
 
+  displayAlert(){
+    if(this.state.errors.error_class !== ''){
+      return(
+        <div className="row justify-content-center">
+          <div className="col-6">
+            <div className={"alert " + this.state.errors.error_class} role="alert">
+              {this.state.errors.error_message}
+            </div>
+          </div>
+        </div>
+      )
+    }
+  },
+
+  displaySongs(){
+    if(this.state.status){
+      return(
+        <div className="row justify-content-center">
+          <div className="loader"></div>
+        </div>
+      )
+    }
+    else{
+      var song_cards = this.state.songs.map(function(obj){
+        return(
+          <Song song={obj} key={obj.name + "_" + obj.difficulty} />
+        )
+      })
+
+      return(
+        <div className="row justify-content-center">
+          {song_cards}
+        </div>
+      )
+    }
+  },
+
   render() {
     var song_cards = this.state.songs.map(function(obj){
       return(
@@ -239,10 +301,10 @@ var App = createReactClass({
           </div>
         </header>
         <br/>
+        {this.displayAlert()}
+        <br/>
         <div className="container">
-          <div className="row justify-content-center">
-            {song_cards}
-          </div>
+          {this.displaySongs()}
           <br/>
         </div>
       </div>
