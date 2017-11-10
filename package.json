@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
     "heroku-postbuild": "cd guac-frontend && npm install && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
