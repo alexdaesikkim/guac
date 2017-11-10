@@ -3,7 +3,7 @@ var path = require('path');
 var app = express();
 var excel = require('xlsx');
 
-app.use(express.static(path.join(__dirname, 'react-frontend/build')));
+app.use(express.static(path.join(__dirname, 'guac-frontend/build')));
 
 //fisher-yates
 function shuffle(array, size){
