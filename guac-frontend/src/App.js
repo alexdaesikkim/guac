@@ -147,21 +147,21 @@ var App = createReactClass({
 
     return(
       <div className="row justify-content-center">
-          <div className="input-group">
-            <div className="input-group-btn">
-              <button type="button" id="dropdown" className="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {button_value}
-              </button>
-              <div className="dropdown-menu">
-                <div className="dropdown-item" id="iidx" onClick={this.handleChangeGameName}>IIDX</div>
-                <div className="dropdown-item" id="ddr" onClick={this.handleChangeGameName}>DDR</div>
-                <div className="dropdown-item" id="popn" onClick={this.handleChangeGameName}>POPN</div>
-                <div className="dropdown-item" id="jubeat" onClick={this.handleChangeGameName}>JUBEAT</div>
-                <div className="dropdown-item" id="museca" onClick={this.handleChangeGameName}>MUSECA</div>
-                <div className="dropdown-item" id="reflec" onClick={this.handleChangeGameName}>REFLEC</div>
-              </div>
+        <div className="col-2">
+          <div className="dropdown">
+            <button type="button" id="dropdown" className="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {button_value}
+            </button>
+            <div className="dropdown-menu">
+              <div className="dropdown-item" id="iidx" onClick={this.handleChangeGameName}>IIDX</div>
+              <div className="dropdown-item" id="ddr" onClick={this.handleChangeGameName}>DDR</div>
+              <div className="dropdown-item" id="popn" onClick={this.handleChangeGameName}>POPN</div>
+              <div className="dropdown-item" id="jubeat" onClick={this.handleChangeGameName}>JUBEAT</div>
+              <div className="dropdown-item" id="museca" onClick={this.handleChangeGameName}>MUSECA</div>
+              <div className="dropdown-item" id="reflec" onClick={this.handleChangeGameName}>REFLEC</div>
             </div>
           </div>
+        </div>
       </div>
     );
   },
@@ -229,11 +229,15 @@ var App = createReactClass({
     return (
       <div className="App">
         <header className="App-header">
-          {this.dropdown()}
-          <br/>
-          {this.state.game_name}
-          <br/>
-          {this.displayLevelForm()}
+          <div className="container">
+            <h2>GUAC Randomizer</h2>
+            <br/>
+            {this.dropdown()}
+            <h2>
+              {this.state.game_name}
+            </h2>
+            {this.displayLevelForm()}
+          </div>
         </header>
         <div className="container">
           <div className="row justify-content-center">
