@@ -210,10 +210,9 @@ var App = createReactClass({
           </div>
           <div className="row justify-content-center">
             <div className="col">
-              Grab Songs
+              <button className="btn btn-primary" onClick={this.handleRandomCall}>Submit</button>
             </div>
           </div>
-          <button className="btn btn-primary" onClick={this.handleRandomCall}>Submit</button>
         </div>
       );
     }
@@ -239,6 +238,7 @@ var App = createReactClass({
             {this.displayLevelForm()}
           </div>
         </header>
+        <br/>
         <div className="container">
           <div className="row justify-content-center">
             {song_cards}
@@ -280,7 +280,7 @@ var Song = createReactClass({
         <div className={c}>
           <div className="card-body" style={{width: w}} onClick={this.onClickChange}>
             <h5 className="card-title">{this.props.song.name}</h5>
-            <h6 className="card-subtitle mb-4 text-muted">{this.props.song.artist}</h6>
+            <h5 className="card-subtitle mb-4">{this.props.song.artist}</h5>
             <h6 className="card-subtitle mb-4">{this.props.song.difficulty + " " + this.props.song.level}</h6>
           </div>
         </div>
